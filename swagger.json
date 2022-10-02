@@ -11,24 +11,24 @@
             "Message"
           ],
           "summary": "Get all messages",
-          "operationId": "GetAllMessages",
+          "operationId": "getAllMessages",
           "responses": {
             "200": {
               "description": "Success",
               "content": {
                 "text/plain": {
                   "schema": {
-                    "type": "#/components/schemas/Message"
+                    "type": "#/components/schemas/message"
                   }
                 },
                 "application/json": {
                   "schema": {
-                    "type": "#/components/schemas/Message"
+                    "type": "#/components/schemas/message"
                   }
                 },
                 "text/json": {
                   "schema": {
-                    "type": "#/components/schemas/Message"
+                    "type": "#/components/schemas/message"
                   }
                 }
               }
@@ -40,22 +40,22 @@
             "Message"
           ],
           "summary": "Add new message",
-          "operationId": "AddMessageToDB",
+          "operationId": "addMessageToDB",
           "requestBody": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateMessage"
+                  "$ref": "#/components/schemas/createMessage"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateMessage"
+                  "$ref": "#/components/schemas/createMessage"
                 }
               },
               "application/*+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateMessage"
+                  "$ref": "#/components/schemas/createMessage"
                 }
               }
             }
@@ -85,10 +85,9 @@
         }
       }
     },
-    
     "components": {
       "schemas": {
-        "Message": {
+        "message": {
           "type": "object",
           "properties": {
             "id": {
@@ -107,7 +106,7 @@
             }
           }
         },
-        "CreateMessage": {
+        "createMessage": {
           "type": "object",
           "properties": {
             "message": {
@@ -119,5 +118,5 @@
           }
         }
       }
-    }    
+    }  
 }
