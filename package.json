@@ -1,0 +1,26 @@
+{
+  "name": "slmax-api",
+  "version": "1.0.0",
+  "description": "Server for online chat",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "node",
+    "server",
+    "onlineChat"
+  ],
+  "author": "Anatoly Tereshonok <ter.tolya@mail.ru>",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "mysql2": "^2.3.3",
+    "swagger-ui-express": "^4.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}

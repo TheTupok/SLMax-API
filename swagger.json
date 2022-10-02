@@ -1,0 +1,123 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OnlineChat.API",
+    "version": "1.0"
+  },
+    "paths": {
+      "/message": {
+        "get": {
+          "tags": [
+            "Message"
+          ],
+          "summary": "Get all messages",
+          "operationId": "GetAllMessages",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "#/components/schemas/Message"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "#/components/schemas/Message"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "Message"
+          ],
+          "summary": "Add new message",
+          "operationId": "AddMessageToDB",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMessage"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMessage"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMessage"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    "components": {
+      "schemas": {
+        "Message": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "uniqueItems": true,
+              "nullable": false
+            },
+            "message": {
+              "type": "string"
+            },
+            "fromUser": {
+                "type": "string"
+            },
+            "time": {
+              "type": "string"
+            }
+          }
+        },
+        "CreateMessage": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "fromUser": {
+                "type": "string"
+            }
+          }
+        }
+      }
+    }    
+}
