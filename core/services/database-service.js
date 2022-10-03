@@ -19,20 +19,23 @@ module.exports = class DatabaseService {
             });
         });
     }
-    getAllMessages() {
+    getAllMessages(currentGroup) {
         return new Promise(async (resolve, reject) => {
-            connection.query(`SELECT * FROM messages`, (err, data) => {
-                if (err) {
-                    reject(err.message);
+            connection.query(
+                `SELECT * FROM messages WHERE groupMessage='${currentGroup}'`,
+                (err, data) => {
+                    if (err) {
+                        reject(err.message);
+                    }
+                    if (data == {}) {
+                        resolve([]);
+                    }
+                    resolve(data);
                 }
-                if (data == {}) {
-                    resolve([]);
-                }
-                resolve(data);
-            });
+            );
         });
     }
-    addMessageToDB(message, user) {
+    addMessageToDB(msg) {
         return new Promise(async (resolve, reject) => {
             const today = new Date();
             const time =
@@ -44,7 +47,9 @@ module.exports = class DatabaseService {
             const lastId = await this.getLastId();
             const newID = lastId[0]['MAX(id)'] + 1;
             connection.query(
-                `INSERT INTO messages (id, message, userName, time) VALUES (${newID}, '${message}', '${user}', '${time}')`,
+                `INSERT INTO messages 
+                (id, message, userName, time, userPicture, groupMessage) 
+                VALUES (${newID}, '${msg.message}', '${msg.userName}', '${time}', '${msg.userPicture}', '${msg.groupMessage}')`,
                 err => {
                     if (err) {
                         reject(err.message);
