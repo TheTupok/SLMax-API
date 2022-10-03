@@ -2,43 +2,31 @@ const PORT = 5000;
 
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
-const cors = require('cors');
+const http = require('http').createServer(app);
 const DatabaseService = require('./core/services/database-service');
-const swaggerUi = require('swagger-ui-express'),
-    swaggerDocument = require('./swagger.json');
-const fs = require('fs');
-
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(express.json());
+const io = require('socket.io')(http, {
+    cors: {
+        origins: ['http://localhost:4200'],
+    },
+});
 
 const dbservice = new DatabaseService();
 
-app.get('/message', async (req, res) => {
+io.on('connection', async socket => {
+    console.log('New user connected');
     const allMessages = await dbservice.getAllMessages();
-    res.json(allMessages);
-});
+    io.emit('getallmessages', JSON.stringify(allMessages));
 
-app.post('/message', async (req, res) => {
-    const { message, fromUser } = req.body;
-    await dbservice.addMessageToDB(message, fromUser);
-    res.json(true);
-});
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
 
-app.delete('/message', async (req, res) => {
-    const { id } = req.body;
-    await dbservice.deleteMessage(id);
-    res.json(true);
-});
-
-app.get('/swagger-json', (req, res) => {
-    fs.readFile('./swagger.json', { encoding: 'utf-8' }, (err, data) => {
-        res.end(data);
+    socket.on('send message', async msg => {
+        const { message, userName } = msg;
+        await dbservice.addMessageToDB(message, userName);
+        const allMessages = await dbservice.getAllMessages();
+        io.emit('getallmessages', JSON.stringify(allMessages));
     });
 });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`));
+http.listen(PORT, () => console.log(`Server started on PORT ${PORT}`));
