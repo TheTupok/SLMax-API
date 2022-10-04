@@ -19,7 +19,20 @@ module.exports = class DatabaseService {
             });
         });
     }
-    getAllMessages(currentGroup) {
+    getAllMessages() {
+        return new Promise(async (resolve, reject) => {
+            connection.query(`SELECT * FROM messages`, (err, data) => {
+                if (err) {
+                    reject(err.message);
+                }
+                if (data == {}) {
+                    resolve([]);
+                }
+                resolve(data);
+            });
+        });
+    }
+    getAllMessagesGroups(currentGroup) {
         return new Promise(async (resolve, reject) => {
             connection.query(
                 `SELECT * FROM messages WHERE groupMessage='${currentGroup}'`,

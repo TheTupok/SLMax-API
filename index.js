@@ -13,21 +13,31 @@ const io = require('socket.io')(http, {
 const dbservice = new DatabaseService();
 
 io.on('connection', async socket => {
-    const allMessages = await dbservice.getAllMessages(socket.currentGroup);
+    const allMessages = await dbservice.getAllMessages();
     const groupList = await dbservice.getAllGroup();
-    io.emit('getAllMessages', JSON.stringify(allMessages));
+
     io.emit('groupList', JSON.stringify(groupList));
+    io.emit('getAllMessages', JSON.stringify(allMessages));
 
     socket.on('sendMessage', async msg => {
         await dbservice.addMessageToDB(msg);
-        const allMessages = await dbservice.getAllMessages(socket.currentGroup);
+        const allMessages = await dbservice.getAllMessages();
+        const getAllMessagesGroups = await dbservice.getAllMessagesGroups(
+            socket.currentGroup
+        );
         io.emit('getAllMessages', JSON.stringify(allMessages));
+        io.emit('getGroupMessage', JSON.stringify(getAllMessagesGroups));
     });
 
     socket.on('currentGroup', async data => {
         socket.currentGroup = data.nameGroup;
-        const allMessages = await dbservice.getAllMessages(socket.currentGroup);
-        io.emit('getAllMessages', JSON.stringify(allMessages));
+        const allMessagesGroup = await dbservice.getAllMessagesGroups(
+            socket.currentGroup
+        );
+        io.to(socket.id).emit(
+            'getGroupMessage',
+            JSON.stringify(allMessagesGroup)
+        );
     });
 });
 
