@@ -16,8 +16,17 @@ io.on('connection', async socket => {
     const allMessages = await dbservice.getAllMessages();
     const groupList = await dbservice.getAllGroup();
 
-    io.emit('groupList', JSON.stringify(groupList));
-    io.emit('getAllMessages', JSON.stringify(allMessages));
+    io.to(socket.id).emit('groupList', JSON.stringify(groupList));
+    io.to(socket.id).emit('getAllMessages', JSON.stringify(allMessages));
+
+    socket.on('getGroupList', async term => {
+        const filteredGroup = groupList.filter(group =>
+            group.nameGroup.toLowerCase().includes(term.toLowerCase())
+        );
+        io.to(socket.id).emit('groupList', JSON.stringify(filteredGroup));
+        const allMessages = await dbservice.getAllMessages();
+        io.emit('getAllMessages', JSON.stringify(allMessages));
+    });
 
     socket.on('sendMessage', async msg => {
         await dbservice.addMessageToDB(msg);
@@ -25,11 +34,11 @@ io.on('connection', async socket => {
         const getAllMessagesGroups = await dbservice.getAllMessagesGroups(
             socket.currentGroup
         );
-        io.emit('getAllMessages', JSON.stringify(allMessages));
         io.to(socket.currentGroup).emit(
             'getGroupMessage',
             JSON.stringify(getAllMessagesGroups)
         );
+        io.emit('getAllMessages', JSON.stringify(allMessages));
     });
 
     socket.on('currentGroup', async data => {
