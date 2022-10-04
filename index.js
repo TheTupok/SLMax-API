@@ -26,10 +26,15 @@ io.on('connection', async socket => {
             socket.currentGroup
         );
         io.emit('getAllMessages', JSON.stringify(allMessages));
-        io.emit('getGroupMessage', JSON.stringify(getAllMessagesGroups));
+        io.to(socket.currentGroup).emit(
+            'getGroupMessage',
+            JSON.stringify(getAllMessagesGroups)
+        );
     });
 
     socket.on('currentGroup', async data => {
+        socket.leave(socket.currentGroup);
+        socket.join(data.nameGroup);
         socket.currentGroup = data.nameGroup;
         const allMessagesGroup = await dbservice.getAllMessagesGroups(
             socket.currentGroup
