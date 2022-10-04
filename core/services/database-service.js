@@ -69,4 +69,17 @@ module.exports = class DatabaseService {
             });
         });
     }
+    getAllGroup() {
+        return new Promise(async (resolve, reject) => {
+            connection.query(`SELECT * FROM groupList`, (err, data) => {
+                if (err) {
+                    reject(err.message);
+                }
+                if (data == {}) {
+                    resolve([]);
+                }
+                resolve(data);
+            });
+        });
+    }
 };
